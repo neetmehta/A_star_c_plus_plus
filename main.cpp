@@ -13,11 +13,11 @@ std::vector<Point> get_neighbors(std::vector<std::string>& map, Point point, Poi
 void visualize(std::vector<std::string> map);
 void claculate_heuristic(const Point& start, const Point& goal, Point& point);
 void backtrack(std::vector<std::string>& map, Point goal, std::map<std::vector<int>, std::vector<int>>& mp);
-std::vector<std::string> map = {  "S                 ",
+std::vector<std::string> map = {  "                  ",
 								  "                  ",
 								  "     ####         ",
 								  "                  ",
-								  "          ####    ",
+								  "S         ####    ",
 								  " ####    #####    ",
 								  "                  ",
 								  "        #####     ",
@@ -96,8 +96,7 @@ void backtrack(std::vector<std::string>& map, Point goal, std::map<std::vector<i
 	int a, b;
 	while (x != -1 && y!=-1)
 	{
-		std::cout << x << ' ' << y << std::endl;
-		map[x][y] = '0';
+		map[x][y] = '.';
 		a = mp[std::vector<int>{x, y}][0];
 		b = mp[std::vector<int>{x, y}][1];
 		x = a;
@@ -115,7 +114,6 @@ std::vector<Point> get_neighbors(std::vector<std::string>& map, Point point, Poi
 		
 		if (x - nb[0] >= 0 && x - nb[0] < map.size() && y - nb[1]>=0 && y - nb[1] < map[0].size() && !visited[x-nb[0]][y-nb[1]])
 		{
-			//std::cout << x - nb[0] << ' ' << y - nb[1] << std::endl;
 			Point neighbor{ x - nb[0] , y - nb[1] };
 			claculate_heuristic(start, goal, neighbor);
 			mp[std::vector<int>{neighbor.x, neighbor.y}] = std::vector<int>{ point.x,point.y };
@@ -130,10 +128,32 @@ void claculate_heuristic(const Point& start, const Point& goal, Point& point)
 	point.heuristic = abs(point.x - start.x) + abs(point.y - start.y) + abs(point.x - goal.x) + abs(point.y - goal.y);
 }
 
+void find_s_g(Point& start, Point& goal, std::vector<std::string>& map)
+{
+    for(int i=0;i<map.size();i++)
+    {
+        for(int j=0;j<map[0].size();j++)
+        {
+            if(map[i][j]=='S')
+            {
+                start.x = i;
+                start.y = j;
+            }
+
+            if(map[i][j]=='G')
+            {
+                goal.x = i;
+                goal.y = j;
+            }
+        }
+    }
+}
+
 int main()
 {
 	Point start{ 0,0 };
 	Point goal{ 9,17 };
+    find_s_g(start, goal, map);
 	visualize(map);
 	astar(map, start, goal);
 	//backtrack(map, goal);
