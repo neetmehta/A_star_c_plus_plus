@@ -13,7 +13,7 @@ std::vector<Point> get_neighbors(std::vector<std::string>& map, Point point, Poi
 void visualize(std::vector<std::string> map);
 void claculate_heuristic(const Point& start, const Point& goal, Point& point);
 void backtrack(std::vector<std::string>& map, Point goal, std::map<std::vector<int>, std::vector<int>>& mp);
-std::vector<std::string> map = {  "####################",
+std::vector<std::string> map = {                                  "####################",
 								  "#                  #",
 								  "#                  #",
 								  "#     #####        #",
