@@ -6,22 +6,21 @@
 #include <iostream>
 #include <queue>
 #include <map>
-#include "Astar.h"
+#include "Astar.hpp"
 
 
 std::vector<std::string> map = {  "####################",
 								  "#                  #",
-								  "#                  #",
-								  "#     #####        #",
-								  "# S        #       #",
+								  "#    #     ####### #",
+								  "# #########        #",
+								  "#        S #       #",
 								  "#          #       #",
 								  "###############    #",
-								  "#  #               #",
+								  "#           G#     #",
 								  "#  #     #####     #",
-								  "#   #            G #",
-								  "#    #             #",
+								  "#   ######         #",
+								  "#                  #",
 								  "####################", };
-
 void AStar::find_s_g()
 {
 	for (int i = 0; i < map.size(); i++)
@@ -43,7 +42,7 @@ void AStar::find_s_g()
 	}
 }
 
-std::vector<Point> AStar::get_neighbors(Point point, std::vector<std::vector<bool>>& visited, std::map<std::vector<int>, std::vector<int>>& mp)
+std::vector<Point> AStar::get_neighbors(Point point, std::vector<std::vector<bool>>& visited, std::vector<std::vector<bool>>& visited_neighbors, std::map<std::vector<int>, std::vector<int>>& mp)
 {
 	int x = point.x, y = point.y;
 	std::vector<std::vector<int>> nbs{ {1,0},{0,1},{-1,0},{0,-1} };
@@ -56,8 +55,13 @@ std::vector<Point> AStar::get_neighbors(Point point, std::vector<std::vector<boo
 			if (map[x - nb[0]][y - nb[1]] == '#') continue;
 			Point neighbor{ x - nb[0] , y - nb[1] };
 			neighbor.home_step = point.home_step + 1;
-			claculate_heuristic(start, goal, neighbor);
-			mp[std::vector<int>{neighbor.x, neighbor.y}] = std::vector<int>{ point.x,point.y };
+			claculate_heuristic(neighbor);
+			neighbor.parent = std::vector<int>{point.x, point.y};
+			if(!visited_neighbors[neighbor.x][neighbor.y])
+			{
+				mp[std::vector<int>{neighbor.x, neighbor.y}] = std::vector<int>{ point.x,point.y };
+			}
+			visited_neighbors[neighbor.x][neighbor.y] = true;
 			neighbors.push_back(neighbor);
 		}
 	}
@@ -80,6 +84,7 @@ void AStar::astar()
 	Point point = start;
 	std::vector<Point> neighbors;
 	std::vector<std::vector<bool>> visited(map.size(), std::vector<bool>(map[0].size(), false));
+	std::vector<std::vector<bool>> visited_neighbors(map.size(), std::vector<bool>(map[0].size(), false));
 	while (!pq.empty())
 	{
 		point = pq.top();
@@ -90,7 +95,7 @@ void AStar::astar()
 			is_possible = true;
 			break;
 		}
-		neighbors = get_neighbors(point, visited, mp);
+		neighbors = get_neighbors(point, visited, visited_neighbors, mp);
 		for (int i = 0; i < neighbors.size(); i++)
 		{
 			pq.push(neighbors[i]);
