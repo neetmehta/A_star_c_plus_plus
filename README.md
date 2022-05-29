@@ -1,7 +1,7 @@
 ## A_star_c_plus_plus
 This is my simple implementation of A* algorithm in C++.
 
-The map is defined as follows:
+The map is defined as follows:  
 '#': Obsctacle  
 ' ': Free space  
 'S': Start  
