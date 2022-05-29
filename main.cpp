@@ -9,7 +9,7 @@
 #include "Astar.hpp"
 
 
-std::vector<std::string> map = {  "####################",
+std::vector<std::string> map = {                                  "####################",
 								  "#                  #",
 								  "#    #     ####### #",
 								  "# #########        #",
