@@ -16,11 +16,11 @@ void backtrack(std::vector<std::string>& map, Point goal, std::map<std::vector<i
 std::vector<std::string> map = {  "####################",
 								  "#                  #",
 								  "#                  #",
-								  "#     ####         #",
+								  "#     #####        #",
+								  "# S        #       #",
 								  "#          #       #",
-								  "# S        ####    #",
-								  "# #############    #",
-								  "#                  #",
+								  "###############    #",
+								  "#  #               #",
 								  "#  #     #####     #",
 								  "#   #            G #",
 								  "#    #             #",
@@ -37,13 +37,7 @@ public:
 	Point() :x(0), y(0) {};
 };
 
-struct Point1Compare
-{
-	bool operator() (const Point& lhs, const Point& rhs) const
-	{
-		return lhs.x < rhs.x;
-	}
-};
+
 class Compare
 {
 public:
@@ -64,6 +58,7 @@ void visualize(std::vector<std::string> map)
 
 void astar(std::vector<std::string>& map, Point& start, Point& goal)
 {
+	bool is_possible = false;
 	std::map<std::vector<int>, std::vector<int>> mp;
 	mp[std::vector<int>{start.x, start.y}] = std::vector<int>{ -1,-1 };
 	std::priority_queue<Point, std::vector<Point>, Compare> pq;
@@ -78,6 +73,7 @@ void astar(std::vector<std::string>& map, Point& start, Point& goal)
 		visited[point.x][point.y] = true;
 		if (point.x == goal.x && point.y == goal.y)
 		{
+			is_possible = true;
 			break;
 		}
 		neighbors = get_neighbors(map, point, start, goal, visited, mp);
@@ -85,6 +81,11 @@ void astar(std::vector<std::string>& map, Point& start, Point& goal)
 		{
 			pq.push(neighbors[i]);
 		}
+	}
+	if (!is_possible)
+	{
+		std::cout << "no path possible" << std::endl;
+		return;
 	}
 	backtrack(map, goal, mp);
 	map[start.x][start.y] = 'S';
